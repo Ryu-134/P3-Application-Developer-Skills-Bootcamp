@@ -42,7 +42,7 @@ class App:
         # Then create a new Tournament instance.
         pass
     def run(self):
-        command - ClubListCmd()
+        command = ClubListCmd()
         self.context = command()
 
         while self.context.run:
@@ -56,7 +56,7 @@ class App:
             except KeyboardInterrupt:
                 # Ctrl-C
                 print("Bye!")
-                self.context.run = False-
+                self.context.run = False
         # Save all tournaments when application exits
         for tournament in self.tournaments:
             self.save_tournament(tournament)
