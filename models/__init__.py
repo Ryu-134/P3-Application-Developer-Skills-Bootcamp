@@ -1,4 +1,3 @@
-#Updated to include new models
 from .player import Player
 from .club import ChessClub
 from .club_manager import ClubManager
