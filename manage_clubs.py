@@ -1,5 +1,8 @@
-from commands import ClubListCmd
+from commands import ClubListCmd, NoopCmd
 from screens import ClubCreate, ClubView, MainMenu, PlayerEdit, PlayerView
+import json
+import os
+from pathlib import Path
 
 
 class App:
@@ -17,10 +20,31 @@ class App:
 
     def __init__(self):
         # We start with the list of clubs (= main menu)
-        command = ClubListCmd()
+        self.club_manager = ClubManager()
+        self.tournaments = self.load_tournaments()
+
+    def load_tournaments(self):
+        tournaments = []
+        tournaments_path = Path('data/tournaments')
+        for tournament_file in tournaments_path.glob('*.json'):
+            with open(tournament_file, 'r') as file:
+                tournament_data = json.load(file)
+                tournaments.append(Tournament.load(tournament_data))
+        return tournaments
+
+    def save_tournament(self, tournament):
+        file_path = Path('data/tournaments') / f'{tournament.name}.json'
+        with open(file_path, 'w') as file:
+            json.dump(tournament.to_json(), file, indent=4)
+
+    def create_tournament(self):
+        # Add logic here to prompt the user for tournament details
+        # Then create a new Tournament instance.
+        pass
+    def run(self):
+        command - ClubListCmd()
         self.context = command()
 
-    def run(self):
         while self.context.run:
             # Get the screen class from the mapping
             screen = self.SCREENS[self.context.screen]
@@ -32,7 +56,10 @@ class App:
             except KeyboardInterrupt:
                 # Ctrl-C
                 print("Bye!")
-                self.context.run = False
+                self.context.run = False-
+        # Save all tournaments when application exits
+        for tournament in self.tournaments:
+            self.save_tournament(tournament)
 
 
 if __name__ == "__main__":
