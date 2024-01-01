@@ -1,16 +1,36 @@
 from datetime import datetime
 from .round import Round
+from .match import Match
 import json
 
 class Tournament:
     def __init__(self, name, venue, start_date, end_date, players=None, rounds=None):
         self.name = name
         self.venue = venue
-        self.start_date = datetime.strptime(start_date, '%d-%m-%Y')
-        self.end_date = datetime.strptime(end_date, '%d-%m-%Y')
+        self.start_date = start_date
+        self.end_date = end_date
         self.players = players if players else []
-        self.rounds = [Round(**round_data) for round_data in rounds] if rounds else []
-        self.player_points = {player_id: 0 for player_id in self.players}  # Initialize player points
+
+        self.rounds = []
+        if rounds:
+            for round_data in rounds:
+                round_matches = []
+                for match_data in round_data:
+                    # Extract player IDs and winner ID from match_data
+                    player1_id = match_data['players'][0]
+                    player2_id = match_data['players'][1]
+                    winner_id = match_data.get('winner')
+
+                    # Determine if the match is a tie
+                    is_tie = winner_id is None
+
+                    # Create a Match object
+                    match = Match(player1_id=match_data['players'][0], player2_id=match_data['players'][1],
+                                  winner_id=match_data.get('winner'), is_tie=match_data.get('winner') is None)
+                    round_matches.append(match)
+
+                self.rounds.append(Round(matches=round_matches))
+
 
     def add_player(self, player_id):
         if player_id not in self.players:
@@ -50,9 +70,20 @@ class Tournament:
     def load(file_path):
         with open(file_path, 'r') as file:
             data = json.load(file)
-            data['start_date'] = datetime.strptime(data['start_date'], '%d-%m-%Y')
-            data['end_date'] = datetime.strptime(data['end_date'], '%d-%m-%Y')
-            data['rounds'] = [Round(**round_data) for round_data in data['rounds']]
-            tournament = Tournament(**data)
-            tournament.player_points = {player_id: 0 for player_id in tournament.players}  # Initialize player points
+
+            # Extracting start and end dates from the nested 'dates' dictionary
+            dates = data.get('dates', {})
+            start_date_str = dates.get('from')
+            end_date_str = dates.get('to')
+
+            data['start_date'] = datetime.strptime(start_date_str, '%d-%m-%Y') if start_date_str else None
+            data['end_date'] = datetime.strptime(end_date_str, '%d-%m-%Y') if end_date_str else None
+
+            # Initialize Tournament with the modified data
+            tournament = Tournament(name=data.get('name'),
+                                    venue=data.get('venue'),
+                                    start_date=data['start_date'],
+                                    end_date=data['end_date'],
+                                    players=data.get('players'),
+                                    rounds=data.get('rounds'))
             return tournament
