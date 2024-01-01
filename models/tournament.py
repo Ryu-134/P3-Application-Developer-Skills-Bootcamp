@@ -10,6 +10,7 @@ class Tournament:
         self.start_date = start_date
         self.end_date = end_date
         self.players = players if players else []
+        self.player_points = {player_id: 0 for player_id in self.players}
 
         self.rounds = []
         if rounds:
@@ -30,6 +31,8 @@ class Tournament:
                     round_matches.append(match)
 
                 self.rounds.append(Round(matches=round_matches))
+        for player_id in self.players:
+            self.player_points[player_id] = 0
 
 
     def add_player(self, player_id):
@@ -87,3 +90,19 @@ class Tournament:
                                     players=data.get('players'),
                                     rounds=data.get('rounds'))
             return tournament
+
+    def calculate_final_points(self):
+        # Reset points for all players
+        for player_id in self.players:
+            self.player_points[player_id] = 0
+
+        # Calculate points for each match in each round
+        for round_obj in self.rounds:
+            for match in round_obj.matches:
+                if match.is_tie:
+                    # Both players get 0.5 points in a tie
+                    self.player_points[match.player1_id] += 0.5
+                    self.player_points[match.player2_id] += 0.5
+                else:
+                    # Winner gets 1 point
+                    self.player_points[match.winner_id] += 1
