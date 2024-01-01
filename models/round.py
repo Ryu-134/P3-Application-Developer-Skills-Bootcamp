@@ -3,7 +3,6 @@ class Round:
         if matches is None:
             self.matches = []
         else:
-            # Assuming 'matches' is already a list of Match objects
             self.matches = matches
 
     def add_match(self, match):

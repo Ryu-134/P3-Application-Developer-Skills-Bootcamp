@@ -19,7 +19,7 @@ class App:
     }
 
     def __init__(self):
-        # We start with the list of clubs (= main menu)
+        # We start with the list of clubs (main menu)
         self.club_manager = ClubManager()
         self.tournaments = self.load_tournaments()
 
@@ -39,7 +39,7 @@ class App:
 
     def create_tournament(self):
         # Add logic here to prompt the user for tournament details
-        # Then create a new Tournament instance.
+        # Create a new Tournament instance.
         pass
     def run(self):
         command = ClubListCmd()
