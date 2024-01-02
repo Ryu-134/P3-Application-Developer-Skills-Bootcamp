@@ -18,21 +18,15 @@ class BaseScreen(ABC):
         If empty is True, a user cannot provide an empty response.
         """
 
-        prompt = prompt + "? "
 
         if default:
-            prompt += f"[{default}] "
+            prompt += f" [{default}]"
 
-        while True:
-            value = input(prompt)
+        value = input(prompt + " ")
+        while empty and not value:
+            value = input(prompt + " ")
 
-            if not value and default:
-                value = default
-
-            if not empty:
-                return value
-            if empty and value:
-                return value
+        return value if value else default
 
     def input_email(self, **kwargs):
         """Utility function to get an email address"""

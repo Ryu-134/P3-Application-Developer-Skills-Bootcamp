@@ -18,19 +18,18 @@ class Tournament:
                 round_matches = []
                 for match_data in round_data:
                     # Extract player IDs and winner ID from match_data
-                    player1_id = match_data['players'][0]
-                    player2_id = match_data['players'][1]
-                    winner_id = match_data.get('winner')
+                    if 'players' in match_data and len(match_data['players']) >= 2:
+                        player1_id = match_data['players'][0]
+                        player2_id = match_data['players'][1]
+                        winner_id = match_data.get('winner')
 
-                    # Determine if the match is a tie
-                    is_tie = winner_id is None
-
-                    # Create a Match object
-                    match = Match(player1_id=match_data['players'][0], player2_id=match_data['players'][1],
-                                  winner_id=match_data.get('winner'), is_tie=match_data.get('winner') is None)
-                    round_matches.append(match)
+                        is_tie = winner_id is None
+                        match = Match(player1_id=player1_id, player2_id=player2_id,
+                                      winner_id=winner_id, is_tie=is_tie)
+                        round_matches.append(match)
 
                 self.rounds.append(Round(matches=round_matches))
+
         for player_id in self.players:
             self.player_points[player_id] = 0
 

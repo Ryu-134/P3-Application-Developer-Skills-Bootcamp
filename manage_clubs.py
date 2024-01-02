@@ -48,18 +48,19 @@ class App:
         self.context = command()
 
         while self.context.run:
-            # Get the screen class from the mapping
-            screen = self.SCREENS[self.context.screen]
+            screen_class = self.SCREENS[self.context.screen]
+            screen_args = {}
+            if screen_class == MainMenu:
+                screen_args['tournaments'] = self.tournaments  # Pass tournaments to MainMenu
+
             try:
-                # Run the screen and get the command
-                command = screen(**self.context.kwargs).run()
-                # Run the command and get a context back
+                screen = screen_class(**screen_args)
+                command = screen.run()
                 self.context = command()
             except KeyboardInterrupt:
-                # Ctrl-C
                 print("Bye!")
                 self.context.run = False
-        # Save all clubs when application exits
+
         for tournament in self.tournaments:
             self.save_tournament(tournament)
 
