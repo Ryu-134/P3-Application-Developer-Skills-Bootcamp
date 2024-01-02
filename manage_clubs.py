@@ -1,8 +1,12 @@
 from commands import ClubListCmd, NoopCmd
 from screens import ClubCreate, ClubView, MainMenu, PlayerEdit, PlayerView
+from models.club_manager import ClubManager
+from models.tournament import Tournament
 import json
 import os
 from pathlib import Path
+
+
 
 
 class App:
@@ -27,9 +31,7 @@ class App:
         tournaments = []
         tournaments_path = Path('data/tournaments')
         for tournament_file in tournaments_path.glob('*.json'):
-            with open(tournament_file, 'r') as file:
-                tournament_data = json.load(file)
-                tournaments.append(Tournament.load(tournament_data))
+            tournaments.append(Tournament.load(str(tournament_file)))
         return tournaments
 
     def save_tournament(self, tournament):
@@ -57,7 +59,7 @@ class App:
                 # Ctrl-C
                 print("Bye!")
                 self.context.run = False
-        # Save all tournaments when application exits
+        # Save all clubs when application exits
         for tournament in self.tournaments:
             self.save_tournament(tournament)
 

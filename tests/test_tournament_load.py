@@ -8,7 +8,7 @@ sys.path.append(os.path.join(project_root, 'models'))
 from models.tournament import Tournament
 
 def load_tournament_and_display(file_name):
-    file_path = os.path.join(project_root, "data", "tournaments", file_name)
+    file_path = os.path.join(project_root, "data", "clubs", file_name)
 
     # Load the tournament
     tournament = Tournament.load(file_path)

@@ -6,7 +6,7 @@ sys.path.append(os.path.join(project_root, 'models'))
 
 from models.tournament import Tournament
 
-file_path = os.path.join(project_root, "data", "tournaments", "completed.json")
+file_path = os.path.join(project_root, "data", "clubs", "completed.json")
 
 tournament = Tournament.load(file_path)
 
