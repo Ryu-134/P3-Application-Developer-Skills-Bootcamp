@@ -1,5 +1,5 @@
 from commands import UpdateMatchResultCmd, GoBackCmd
-from .base_screen import BaseScreen
+from screens.base_screen import BaseScreen
 
 class RoundResultsEntryView(BaseScreen):
     """Screen for entering results of matches in the current round of a tournament."""

@@ -1,5 +1,5 @@
 from commands import RegisterPlayerCmd, EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd
-from .base_screen import BaseScreen
+from screens.base_screen import BaseScreen
 
 class TournamentView(BaseScreen):
     """Screen for viewing and managing a specific tournament."""

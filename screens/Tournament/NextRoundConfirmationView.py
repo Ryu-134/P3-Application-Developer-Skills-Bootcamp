@@ -1,5 +1,5 @@
 from commands import AdvanceRoundCmd, GoBackCmd
-from .base_screen import BaseScreen
+from screens.base_screen import BaseScreen
 
 class NextRoundConfirmationView(BaseScreen):
     """Screen for confirming to advance to the next round of a tournament."""

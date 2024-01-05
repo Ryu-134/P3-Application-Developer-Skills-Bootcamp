@@ -1,4 +1,4 @@
-from .base_screen import BaseScreen
+from screens.base_screen import BaseScreen
 from commands import GoBackCmd
 
 class TournamentReportView(BaseScreen):

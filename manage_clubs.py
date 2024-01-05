@@ -2,12 +2,14 @@ from commands import ClubListCmd, NoopCmd
 from screens import ClubCreate, ClubView, MainMenu, PlayerEdit, PlayerView
 from models.club_manager import ClubManager
 from models.tournament import Tournament
+from screens.Tournament.TournamentListView import TournamentListView
+from screens.Tournament.TournamentView import TournamentView
 import json
 import os
 from pathlib import Path
 
 
-
+#Verison 1.5
 
 class App:
     """The main controller for the club management program"""
@@ -19,6 +21,8 @@ class App:
         "player-view": PlayerView,
         "player-edit": PlayerEdit,
         "player-create": PlayerEdit,
+        "tournament-list-view": TournamentListView,
+        "tournament-view": TournamentView,
         "exit": False,
     }
 
@@ -43,6 +47,7 @@ class App:
         # Add logic here to prompt the user for tournament details
         # Create a new Tournament instance.
         pass
+
     def run(self):
         command = ClubListCmd()
         self.context = command()
@@ -50,8 +55,10 @@ class App:
         while self.context.run:
             screen_class = self.SCREENS[self.context.screen]
             screen_args = {}
-            if screen_class == MainMenu:
-                screen_args['tournaments'] = self.tournaments  # Pass tournaments to MainMenu
+
+            # If the current screen is TournamentListView, pass the tournaments list
+            if self.context.screen == "tournament-list-view" or screen_class == MainMenu:
+                screen_args['tournaments'] = self.tournaments
 
             try:
                 screen = screen_class(**screen_args)

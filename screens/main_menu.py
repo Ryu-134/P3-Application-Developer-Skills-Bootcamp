@@ -1,5 +1,5 @@
 from commands import ExitCmd, NoopCmd
-from .base_screen import BaseScreen
+from screens.base_screen import BaseScreen
 
 class MainMenu(BaseScreen):
     """Main menu screen"""
