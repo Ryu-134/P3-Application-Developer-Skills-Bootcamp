@@ -8,8 +8,7 @@ import json
 import os
 from pathlib import Path
 
-
-
+#Version 1.5.1
 class App:
     """The main controller for the club management program"""
 
@@ -49,7 +48,7 @@ class App:
 
     def run(self):
         command = ClubListCmd()
-        self.context = command.execute()  # or simply command() if your Command class is callable
+        self.context = command.execute()
 
         while self.context.run:
             # Retrieve the correct screen class from the context
@@ -60,10 +59,11 @@ class App:
             screen_args = self.context.kwargs
 
             if screen_class == MainMenu:
-                # Pass tournaments to MainMenu
-                screen_args['tournaments'] = self.tournaments
-            elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
-                screen_args['tournament'] = self.context.kwargs['selected_tournament']
+                screen_args = {'tournaments': self.tournaments}
+            elif screen_class == TournamentListView:
+                screen_args = {'tournaments': self.tournaments}
+            elif screen_class == TournamentView:
+                screen_args = {'tournament': self.context.kwargs.get('selected_tournament')}
 
             try:
                 screen = screen_class(**screen_args)
