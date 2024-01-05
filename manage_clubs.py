@@ -9,7 +9,6 @@ import os
 from pathlib import Path
 
 
-#Verison 1.5
 
 class App:
     """The main controller for the club management program"""
@@ -50,26 +49,29 @@ class App:
 
     def run(self):
         command = ClubListCmd()
-        self.context = command()
+        self.context = command.execute()  # or simply command() if your Command class is callable
 
         while self.context.run:
-            screen_class = self.SCREENS[self.context.screen]
-            screen_args = {}
+            # Retrieve the correct screen class from the context
+            screen_class = self.SCREENS.get(self.context.screen)
+            if not screen_class:
+                print(f"No screen found for {self.context.screen}")
+                break
+            screen_args = self.context.kwargs
 
-            # If the current screen is TournamentListView, pass the tournaments list
-            if self.context.screen == "tournament-list-view" or screen_class == MainMenu:
+            if screen_class == MainMenu:
+                # Pass tournaments to MainMenu
                 screen_args['tournaments'] = self.tournaments
+            elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
+                screen_args['tournament'] = self.context.kwargs['selected_tournament']
 
             try:
                 screen = screen_class(**screen_args)
                 command = screen.run()
-                self.context = command()
+                self.context = command.execute()
             except KeyboardInterrupt:
-                print("Bye!")
-                self.context.run = False
-
-        for tournament in self.tournaments:
-            self.save_tournament(tournament)
+                print("Exiting the application. Bye!")
+                break
 
 
 if __name__ == "__main__":
