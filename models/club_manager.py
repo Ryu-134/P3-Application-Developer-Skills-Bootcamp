@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from .club import ChessClub
+from models.club import ChessClub
 
 
 class ClubManager:
@@ -22,3 +22,9 @@ class ClubManager:
 
         self.clubs.append(club)
         return club
+
+    def fetch_all_players(self):
+        all_players = []
+        for club in self.clubs:
+            all_players.extend(club.players)
+        return all_players

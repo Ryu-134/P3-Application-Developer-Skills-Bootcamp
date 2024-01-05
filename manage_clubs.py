@@ -4,11 +4,12 @@ from models.club_manager import ClubManager
 from models.tournament import Tournament
 from screens.Tournament.TournamentListView import TournamentListView
 from screens.Tournament.TournamentView import TournamentView
+from screens.Tournament.PlayerRegistrationView import PlayerRegistrationView
 import json
 import os
 from pathlib import Path
 
-#Version 1.5.1
+
 class App:
     """The main controller for the club management program"""
 
@@ -20,6 +21,7 @@ class App:
         "player-edit": PlayerEdit,
         "player-create": PlayerEdit,
         "tournament-list-view": TournamentListView,
+        "player-registration": PlayerRegistrationView,
         "tournament-view": TournamentView,
         "exit": False,
     }
@@ -49,7 +51,6 @@ class App:
     def run(self):
         command = ClubListCmd()
         self.context = command.execute()
-
         while self.context.run:
             # Retrieve the correct screen class from the context
             screen_class = self.SCREENS.get(self.context.screen)
@@ -72,6 +73,10 @@ class App:
                 screen_args = {'tournaments': self.tournaments}
             elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
                 screen_args = {'tournament': self.context.kwargs['selected_tournament']}
+            elif screen_class == PlayerRegistrationView and 'tournament' in self.context.kwargs:
+                all_players = self.club_manager.fetch_all_players()
+                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players}
+
 
             # Instantiate and run the screen, and retrieve the next command
             try:
@@ -81,7 +86,6 @@ class App:
             except KeyboardInterrupt:
                 print("Exiting the application. Bye!")
                 break
-
 
 if __name__ == "__main__":
     app = App()

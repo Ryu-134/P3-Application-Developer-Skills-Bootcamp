@@ -1,4 +1,4 @@
-from commands import RegisterPlayerCmd, EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd
+from commands import RegisterPlayerCmd, EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
 from screens.base_screen import BaseScreen
 
 class TournamentView(BaseScreen):
@@ -29,7 +29,7 @@ class TournamentView(BaseScreen):
         while True:
             choice = self.input_string("Enter your choice: ")
             if choice == "1":
-                return RegisterPlayerCmd(self.tournament)
+                return NoopCmd("player-registration", tournament=self.tournament)
             elif choice == "2":
                 return EnterResultsCmd(self.tournament)
             elif choice == "3":
