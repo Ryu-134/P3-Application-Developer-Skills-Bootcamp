@@ -54,17 +54,26 @@ class App:
             # Retrieve the correct screen class from the context
             screen_class = self.SCREENS.get(self.context.screen)
             if not screen_class:
-                print(f"No screen found for {self.context.screen}")
-                break
+                # Fallback to the main menu if the screen is not found or if returning from a previous screen
+                if self.context.screen is None:
+                    print("Returning to the main menu.")
+                else:
+                    print(f"No screen found for {self.context.screen}. Returning to the main menu.")
+                self.context.screen = "main-menu"
+                screen_class = self.SCREENS.get(self.context.screen)
+
+            # Prepare arguments for the screen
             screen_args = self.context.kwargs
 
+            # Pass specific arguments to certain screens if needed
             if screen_class == MainMenu:
                 screen_args = {'tournaments': self.tournaments}
             elif screen_class == TournamentListView:
                 screen_args = {'tournaments': self.tournaments}
-            elif screen_class == TournamentView:
-                screen_args = {'tournament': self.context.kwargs.get('selected_tournament')}
+            elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
+                screen_args = {'tournament': self.context.kwargs['selected_tournament']}
 
+            # Instantiate and run the screen, and retrieve the next command
             try:
                 screen = screen_class(**screen_args)
                 command = screen.run()

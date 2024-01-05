@@ -15,8 +15,8 @@ class TournamentView(BaseScreen):
         print(f"Number of Rounds: {len(self.tournament.rounds)}")
         print(f"Current Round: {self.tournament.current_round or 'Tournament Ended'}")
         print("Players: ")
-        for player in self.tournament.players:
-            print(f"- {player.name} (ID: {player.id})")
+        for player_id in self.tournament.players:
+            print(f"- Player ID: {player_id}")
 
         print("\nOptions:")
         print("1. Register a Player")

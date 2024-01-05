@@ -4,13 +4,14 @@ from .match import Match
 import json
 
 class Tournament:
-    def __init__(self, name, venue, start_date, end_date, players=None, rounds=None):
+    def __init__(self, name, venue, start_date, end_date, players=None, rounds=None, current_round=1):
         self.name = name
         self.venue = venue
         self.start_date = start_date
         self.end_date = end_date
         self.players = players if players else []
         self.player_points = {player_id: 0 for player_id in self.players}
+        self.current_round = current_round
 
         self.rounds = []
         if rounds:
@@ -61,7 +62,8 @@ class Tournament:
             "end_date": self.end_date.strftime('%d-%m-%Y'),
             "players": self.players,
             "rounds": [round.to_json() for round in self.rounds],
-            "player_points": self.player_points  # Include player points in the JSON representation
+            "player_points": self.player_points, # Include player points in the JSON representation
+            "current_round": self.current_round
         }
 
     def save(self, file_path):
@@ -72,22 +74,22 @@ class Tournament:
     def load(file_path):
         with open(file_path, 'r') as file:
             data = json.load(file)
-
             # Extracting start and end dates from the nested 'dates' dictionary
             dates = data.get('dates', {})
             start_date_str = dates.get('from')
             end_date_str = dates.get('to')
-
+            # Convert string dates to datetime objects
             data['start_date'] = datetime.strptime(start_date_str, '%d-%m-%Y') if start_date_str else None
             data['end_date'] = datetime.strptime(end_date_str, '%d-%m-%Y') if end_date_str else None
-
+            current_round = data.get('current_round, 1')
             # Initialize Tournament with the modified data
             tournament = Tournament(name=data.get('name'),
                                     venue=data.get('venue'),
                                     start_date=data['start_date'],
                                     end_date=data['end_date'],
                                     players=data.get('players'),
-                                    rounds=data.get('rounds'))
+                                    rounds=data.get('rounds'),
+                                    current_round=current_round)
             return tournament
 
     def calculate_final_points(self):
