@@ -1,12 +1,13 @@
 class RegisterPlayerCmd:
-    def __init__(self, tournament, player_id):
+    def __init__(self, tournament, player, context):
         self.tournament = tournament
-        self.player_id = player_id
+        self.player = player
+        self.context = context
 
     def execute(self):
-        # Add player to the tournament if not already registered
-        if self.player_id not in self.tournament.players:
-            self.tournament.players.append(self.player_id)
-            print(f"Player {self.player_id} registered in {self.tournament.name}")
+        if self.player.chess_id not in self.tournament.players:
+            self.tournament.players.append(self.player.chess_id)
+            print(f"Player {self.player.name} (ID: {self.player.chess_id}) registered in {self.tournament.name}")
         else:
-            print(f"Player {self.player_id} is already registered in {self.tournament.name}")
+            print(f"Player {self.player.name} (ID: {self.player.chess_id}) is already registered in {self.tournament.name}")
+        return self.context

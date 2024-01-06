@@ -4,9 +4,10 @@ from screens.base_screen import BaseScreen
 class PlayerRegistrationView(BaseScreen):
     """Screen for registering a player for a tournament."""
 
-    def __init__(self, tournament, players):
+    def __init__(self, tournament, players, context):
         self.tournament = tournament
         self.players = players
+        self.context = context
 
     def display(self):
         print(f"Register a player for the tournament: {self.tournament.name}")
@@ -23,7 +24,8 @@ class PlayerRegistrationView(BaseScreen):
                 choice = int(choice)
                 if 1 <= choice <= len(self.players):
                     selected_player = self.players[choice - 1]
-                    return RegisterPlayerCmd(self.tournament, selected_player)
+                    # Pass the current context as an argument to RegisterPlayerCmd
+                    return RegisterPlayerCmd(self.tournament, selected_player, self.context)
             elif choice.lower() == 'search':
                 search_term = self.input_string("Enter Chess ID or player's name to search: ")
                 return self.search_player(search_term)

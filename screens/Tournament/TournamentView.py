@@ -4,9 +4,10 @@ from screens.base_screen import BaseScreen
 class TournamentView(BaseScreen):
     """Screen for viewing and managing a specific tournament."""
 
-    def __init__(self, tournament):
+    def __init__(self, tournament, club_manager, players=None):
         self.tournament = tournament
-
+        self.club_manager = club_manager
+        self.players = players if players is not None else self.fetch_players()
     def display(self):
         print(f"Tournament: {self.tournament.name}")
         print(f"Venue: {self.tournament.venue}")
@@ -29,7 +30,7 @@ class TournamentView(BaseScreen):
         while True:
             choice = self.input_string("Enter your choice: ")
             if choice == "1":
-                return NoopCmd("player-registration", tournament=self.tournament)
+                return NoopCmd("player-registration", tournament=self.tournament, players=self.players)
             elif choice == "2":
                 return EnterResultsCmd(self.tournament)
             elif choice == "3":
@@ -40,3 +41,8 @@ class TournamentView(BaseScreen):
                 return GoBackCmd()
             else:
                 print("Invalid choice. Please try again.")
+
+    def fetch_players(self):
+        return self.club_manager.fetch_all_players()
+
+

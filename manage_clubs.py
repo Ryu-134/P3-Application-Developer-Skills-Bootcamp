@@ -72,10 +72,12 @@ class App:
             elif screen_class == TournamentListView:
                 screen_args = {'tournaments': self.tournaments}
             elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
-                screen_args = {'tournament': self.context.kwargs['selected_tournament']}
+                selected_tournament = self.context.kwargs['selected_tournament']
+                screen_args = {'tournament': selected_tournament, 'club_manager': self.club_manager}
             elif screen_class == PlayerRegistrationView and 'tournament' in self.context.kwargs:
                 all_players = self.club_manager.fetch_all_players()
-                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players}
+                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players,
+                               'context': self.context}
 
 
             # Instantiate and run the screen, and retrieve the next command
