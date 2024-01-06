@@ -15,14 +15,16 @@ class MainMenu(BaseScreen):
 
     def get_command(self):
         while True:
-            value = self.input_string("Enter your choice: ")
-            if value.isdigit():
-                value = int(value)
-                if value == 1:
+            choice = self.input_string("Enter your choice: ")
+            if choice.isdigit():
+                choice = int(choice)
+                if choice == 1:
                     return NoopCmd("tournament-list-view")
-                elif value == 2:
+                elif choice == 2:
                     return NoopCmd("tournament-create")
-            elif value.upper() == "X":
-                return ExitCmd()
+                elif choice == 3:
+                    return ExitCmd()
+                else:
+                    print("Invalid choice. Please try again.")
             else:
-                print("Invalid choice. Please try again.")
+                print("Invalid input. Please enter a number.")
