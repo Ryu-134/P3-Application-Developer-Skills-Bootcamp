@@ -5,11 +5,13 @@ from models.tournament import Tournament
 from screens.Tournament.TournamentListView import TournamentListView
 from screens.Tournament.TournamentView import TournamentView
 from screens.Tournament.PlayerRegistrationView import PlayerRegistrationView
+from screens.Tournament.TournamentCreateView import TournamentCreateView
+from commands.context import Context  
 import json
 import os
 from pathlib import Path
 
-
+#Version 1.7
 class App:
     """The main controller for the club management program"""
 
@@ -23,6 +25,7 @@ class App:
         "tournament-list-view": TournamentListView,
         "player-registration": PlayerRegistrationView,
         "tournament-view": TournamentView,
+        "tournament-create": TournamentCreateView,
         "exit": False,
     }
 
@@ -30,6 +33,7 @@ class App:
         # We start with the list of clubs (main menu)
         self.club_manager = ClubManager()
         self.tournaments = self.load_tournaments()
+        self.create_tournament_view = None
 
     def load_tournaments(self):
         tournaments = []
@@ -44,29 +48,28 @@ class App:
             json.dump(tournament.to_json(), file, indent=4)
 
     def create_tournament(self):
-        # Add logic here to prompt the user for tournament details
-        # Create a new Tournament instance.
-        pass
+        self.create_tournament_view = TournamentCreateView(self.save_tournament)
+        create_tournament_command = self.create_tournament_view.get_command()
+        create_tournament_command.execute()
 
     def run(self):
         command = ClubListCmd()
         self.context = command.execute()
+
         while self.context.run:
-            # Retrieve the correct screen class from the context
             screen_class = self.SCREENS.get(self.context.screen)
+
             if not screen_class:
-                # Fallback to the main menu if the screen is not found or if returning from a previous screen
                 if self.context.screen is None:
                     print("Returning to the main menu.")
+                    self.context.screen = "main-menu"
                 else:
                     print(f"No screen found for {self.context.screen}. Returning to the main menu.")
                 self.context.screen = "main-menu"
-                screen_class = self.SCREENS.get(self.context.screen)
+                continue  # Ensure the loop continues after updating the context
 
-            # Prepare arguments for the screen
             screen_args = self.context.kwargs
 
-            # Pass specific arguments to certain screens if needed
             if screen_class == MainMenu:
                 screen_args = {'tournaments': self.tournaments}
             elif screen_class == TournamentListView:
@@ -76,15 +79,28 @@ class App:
                 screen_args = {'tournament': selected_tournament, 'club_manager': self.club_manager}
             elif screen_class == PlayerRegistrationView and 'tournament' in self.context.kwargs:
                 all_players = self.club_manager.fetch_all_players()
-                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players,
-                               'context': self.context}
+                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players}
+            elif screen_class == TournamentCreateView:
+                screen_args = {'save_function': self.save_tournament}
 
-
-            # Instantiate and run the screen, and retrieve the next command
             try:
                 screen = screen_class(**screen_args)
                 command = screen.run()
-                self.context = command.execute()
+
+                # Check if the command is executable
+                if hasattr(command, "execute"):
+                    new_context = command.execute()
+
+                    # Check if new_context is a Context instance
+                    if isinstance(new_context, Context):
+                        self.context = new_context
+                    else:
+                        print(f"Command execution did not return a Context object: {type(new_context).__name__}")
+                        break
+                else:
+                    print(f"Received a non-executable command: {type(command).__name__}")
+                    break
+
             except KeyboardInterrupt:
                 print("Exiting the application. Bye!")
                 break
