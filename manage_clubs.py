@@ -11,7 +11,7 @@ import json
 import os
 from pathlib import Path
 
-#Version 1.8
+#Version 1.6
 class App:
     """The main controller for the club management program"""
 
