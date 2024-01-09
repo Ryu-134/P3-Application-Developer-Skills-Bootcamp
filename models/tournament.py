@@ -2,9 +2,10 @@ from datetime import datetime
 from .round import Round
 from .match import Match
 import json
+import random
 
 class Tournament:
-    def __init__(self, name, venue, start_date, end_date, players=None, rounds=None, current_round=1):
+    def __init__(self, name, venue, start_date, end_date, players=None, rounds=None, current_round=1, total_rounds=4):
         self.name = name
         self.venue = venue
         self.start_date = start_date
@@ -13,6 +14,8 @@ class Tournament:
         self.player_points = {player_id: 0 for player_id in self.players}
         self.current_round = current_round
         self.rounds = rounds if rounds else []
+        self.total_rounds = total_rounds
+
 
         for player_id in self.players:
             self.player_points[player_id] = 0
@@ -40,8 +43,8 @@ class Tournament:
         return {
             "name": self.name,
             "venue": self.venue,
-            "start_date": self.start_date.strftime('%Y-%m-%d'),
-            "end_date": self.end_date.strftime('%Y-%m-%d'),
+            "start_date": self.start_date.strftime('%d-%m-%Y'),
+            "end_date": self.end_date.strftime('%d-%m-%Y'),
             "players": self.players,
             "rounds": [round.to_json() for round in self.rounds],
             "player_points": self.player_points,
@@ -107,24 +110,33 @@ class Tournament:
         all_matches_completed = all(match.completed for match in self.rounds[self.current_round - 1].matches)
 
         # Check if the current round is not the last one
-        more_rounds_to_play = self.current_round < len(self.rounds)
+        more_rounds_to_play = self.current_round < self.total_rounds
 
         return all_matches_completed and more_rounds_to_play
 
     def advance_to_next_round(self):
+        print("Advancing to next round...")
         # Sort players by points in descending order
         sorted_players = sorted(self.players, key=lambda p: self.player_points[p], reverse=True)
+        print(f"Sorted players by points: {sorted_players}")
+
 
         # Create new matches for the next round
         new_matches = []
         while len(sorted_players) >= 2:
             player1 = sorted_players.pop(0)
             potential_opponents = [p for p in sorted_players if not self.has_played_against(player1, p)]
+            print(f"Potential opponents for {player1}: {potential_opponents}")
+
 
             if potential_opponents:
                 opponent = random.choice(potential_opponents)
+                print(f"Selected opponent for {player1}: {opponent}")
+
             else:
                 opponent = sorted_players.pop(0)
+                print(f"No potential opponents left. Selected opponent for {player1}: {opponent}")
+
 
             new_matches.append(Match(player1_id=player1, player2_id=opponent))
             sorted_players.remove(opponent)
@@ -133,6 +145,8 @@ class Tournament:
         new_round = Round(matches=new_matches)
         self.rounds.append(new_round)
         self.current_round += 1
+        print(f"New round added. Current round is now: {self.current_round}")
+
 
     def has_played_against(self, player1, player2):
         # Check if the players have already played against each other

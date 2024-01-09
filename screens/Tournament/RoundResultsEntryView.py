@@ -8,7 +8,7 @@ class RoundResultsEntryView(BaseScreen):
         self.tournament = tournament
 
     def display(self):
-        print(f"Entering results for {self.tournament.name}, Round {self.tournament.current_round_number}")
+        print(f"Entering results for {self.tournament.name}, Round {self.tournament.current_round}")
         for idx, match in enumerate(self.tournament.get_current_round_matches(), 1):
             print(f"{idx}. {match.player1} vs {match.player2} - Enter '1' for {match.player1} wins, '2' for {match.player2} wins, 'T' for tie")
 
