@@ -45,6 +45,8 @@ class TournamentView(BaseScreen):
     def fetch_players(self):
         return self.club_manager.fetch_all_players()
 
+
+
     def enter_results(self):
         if self.tournament.current_round is None or self.tournament.current_round > len(self.tournament.rounds):
             print("No current round available.")
@@ -74,7 +76,7 @@ class TournamentView(BaseScreen):
                     winner_id = match.player1_id if match.player2_id == loser_id else match.player2_id
                     return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, club_manager=self.club_manager)
                 elif result_choice == "3":
-                    return EnterResultsCmd(self.tournament, match_index, is_tie=True)
+                    return EnterResultsCmd(self.tournament, match_index, is_tie=True, club_manager=self.club_manager)
                 else:
                     print("Invalid result choice.")
             else:
