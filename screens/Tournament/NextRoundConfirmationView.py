@@ -9,7 +9,7 @@ class NextRoundConfirmationView(BaseScreen):
 
     def display(self):
         print(f"Tournament: {self.tournament.name}")
-        print(f"Current Round: {self.tournament.current_round_number}")
+        print(f"Current Round: {self.tournament.current_round}")
         print("Are you sure you want to advance to the next round? (yes/no)")
 
     def get_command(self):

@@ -102,3 +102,42 @@ class Tournament:
                     # Winner gets 1 point
                     self.player_points[match.winner_id] += 1
 
+    def can_advance_round(self):
+        # Check if all matches in the current round are completed
+        all_matches_completed = all(match.completed for match in self.rounds[self.current_round - 1].matches)
+
+        # Check if the current round is not the last one
+        more_rounds_to_play = self.current_round < len(self.rounds)
+
+        return all_matches_completed and more_rounds_to_play
+
+    def advance_to_next_round(self):
+        # Sort players by points in descending order
+        sorted_players = sorted(self.players, key=lambda p: self.player_points[p], reverse=True)
+
+        # Create new matches for the next round
+        new_matches = []
+        while len(sorted_players) >= 2:
+            player1 = sorted_players.pop(0)
+            potential_opponents = [p for p in sorted_players if not self.has_played_against(player1, p)]
+
+            if potential_opponents:
+                opponent = random.choice(potential_opponents)
+            else:
+                opponent = sorted_players.pop(0)
+
+            new_matches.append(Match(player1_id=player1, player2_id=opponent))
+            sorted_players.remove(opponent)
+
+        # Create and add the new round
+        new_round = Round(matches=new_matches)
+        self.rounds.append(new_round)
+        self.current_round += 1
+
+    def has_played_against(self, player1, player2):
+        # Check if the players have already played against each other
+        for round_obj in self.rounds:
+            if any(match.player1_id == player1 and match.player2_id == player2 or
+                   match.player1_id == player2 and match.player2_id == player1 for match in round_obj.matches):
+                return True
+        return False

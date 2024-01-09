@@ -34,7 +34,7 @@ class TournamentView(BaseScreen):
             elif choice == "2":
                 return self.enter_results()
             elif choice == "3":
-                return AdvanceRoundCmd(self.tournament)
+                return AdvanceRoundCmd(self.tournament, self.club_manager)
             elif choice == "4":
                 return GenerateReportCmd(self.tournament)
             elif choice == "5":
