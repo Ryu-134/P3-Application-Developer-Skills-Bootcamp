@@ -77,9 +77,16 @@ class App:
             elif screen_class == TournamentView and 'selected_tournament' in self.context.kwargs:
                 selected_tournament = self.context.kwargs['selected_tournament']
                 screen_args = {'tournament': selected_tournament, 'club_manager': self.club_manager}
-            elif screen_class == PlayerRegistrationView and 'tournament' in self.context.kwargs:
-                all_players = self.club_manager.fetch_all_players()
-                screen_args = {'tournament': self.context.kwargs['tournament'], 'players': all_players}
+            elif screen_class == PlayerRegistrationView:
+                tournament = self.context.kwargs.get('tournament')
+                if tournament:
+                    all_players = self.club_manager.fetch_all_players()
+                    # Pass the current context as an argument
+                    screen_args = {
+                        'tournament': tournament,
+                        'players': all_players,
+                        'context': self.context
+                    }
             elif screen_class == TournamentCreateView:
                 screen_args = {'save_function': self.save_tournament}
 

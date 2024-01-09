@@ -81,7 +81,7 @@ class Tournament:
             # Convert string dates to datetime objects
             data['start_date'] = datetime.strptime(start_date_str, '%d-%m-%Y') if start_date_str else None
             data['end_date'] = datetime.strptime(end_date_str, '%d-%m-%Y') if end_date_str else None
-            current_round = data.get('current_round, 1')
+            current_round = data.get('current_round', 1)
             # Initialize Tournament with the modified data
             tournament = Tournament(name=data.get('name'),
                                     venue=data.get('venue'),

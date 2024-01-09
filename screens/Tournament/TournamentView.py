@@ -75,4 +75,3 @@ class TournamentView(BaseScreen):
                 print("Invalid match number.")
         else:
             print("Please enter a valid number.")
-
