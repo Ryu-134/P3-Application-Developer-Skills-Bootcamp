@@ -101,11 +101,16 @@ class App:
                     # Check if new_context is a Context instance
                     if isinstance(new_context, Context):
                         self.context = new_context
+                        if self.context.screen == "tournament-view" and hasattr(self.context, 'tournament'):
+                            # Reconstruct the tournament view with the updated context
+                            screen_args = {'tournament': self.context.tournament, 'club_manager': self.club_manager}
+                            screen = TournamentView(**screen_args)
+                            continue  # Continue the loop to refresh the screen
                     else:
                         print(f"Command execution did not return a Context object: {type(new_context).__name__}")
                         break
                 else:
-                    print(f"Received a non-executable command: {type(command).__name__}")
+                    print("No command received.")
                     break
 
             except KeyboardInterrupt:

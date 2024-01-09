@@ -1,4 +1,5 @@
 from commands import RegisterPlayerCmd, EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
+from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
 from screens.base_screen import BaseScreen
 
 class TournamentView(BaseScreen):
@@ -50,14 +51,14 @@ class TournamentView(BaseScreen):
     def enter_results(self):
         if self.tournament.current_round is None or self.tournament.current_round > len(self.tournament.rounds):
             print("No current round available.")
-            return GoBackCmd()
+            return self.refresh_tournament_view()
 
         current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
         ongoing_matches = [match for match in current_round_matches if not match.completed]
 
         if not ongoing_matches:
             print("All matches in the current round are completed.")
-            return GoBackCmd()
+            return self.refresh_tournament_view()
 
         for idx, match in enumerate(ongoing_matches, 1):
             print(f"{idx}. Players: {match.player1_id} vs {match.player2_id}")
@@ -84,3 +85,6 @@ class TournamentView(BaseScreen):
         else:
             print("Please enter a valid number.")
 
+    def refresh_tournament_view(self):
+        # Returns a command to refresh the tournament view
+        return RefreshTournamentViewCmd(self.tournament, self.club_manager)
