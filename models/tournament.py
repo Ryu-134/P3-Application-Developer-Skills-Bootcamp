@@ -12,57 +12,39 @@ class Tournament:
         self.players = players if players else []
         self.player_points = {player_id: 0 for player_id in self.players}
         self.current_round = current_round
-
-        self.rounds = []
-        if rounds:
-            for round_data in rounds:
-                round_matches = []
-                for match_data in round_data:
-                    # Extract player IDs and winner ID from match_data
-                    if 'players' in match_data and len(match_data['players']) >= 2:
-                        player1_id = match_data['players'][0]
-                        player2_id = match_data['players'][1]
-                        winner_id = match_data.get('winner')
-
-                        is_tie = winner_id is None
-                        match = Match(player1_id=player1_id, player2_id=player2_id,
-                                      winner_id=winner_id, is_tie=is_tie)
-                        round_matches.append(match)
-
-                self.rounds.append(Round(matches=round_matches))
+        self.rounds = rounds if rounds else []
 
         for player_id in self.players:
             self.player_points[player_id] = 0
 
-
     def add_player(self, player_id):
         if player_id not in self.players:
             self.players.append(player_id)
-            self.player_points[player_id] = 0  # Initialize points for new player
+            self.player_points[player_id] = 0
 
     def add_round(self, round_data):
         self.rounds.append(Round(**round_data))
 
     def update_points_after_round(self):
-        # Ensure that this method is called after each round
-        for match in self.rounds[-1].matches:  # Assuming the last round is the current round
+        # Iterate over the matches in the last round
+        for match in self.rounds[-1].matches:
             if match.is_tie:
                 # Both players get 0.5 points in a tie
                 self.player_points[match.player1_id] += 0.5
                 self.player_points[match.player2_id] += 0.5
-            else:
-                # Winner gets 1 point
+            elif match.winner_id:
+                # Winner gets 1 point, ensure winner_id is not None
                 self.player_points[match.winner_id] += 1
 
     def to_json(self):
         return {
             "name": self.name,
             "venue": self.venue,
-            "start_date": self.start_date.strftime('%d-%m-%Y'),
-            "end_date": self.end_date.strftime('%d-%m-%Y'),
+            "start_date": self.start_date.strftime('%Y-%m-%d'),
+            "end_date": self.end_date.strftime('%Y-%m-%d'),
             "players": self.players,
             "rounds": [round.to_json() for round in self.rounds],
-            "player_points": self.player_points, # Include player points in the JSON representation
+            "player_points": self.player_points,
             "current_round": self.current_round
         }
 
@@ -74,36 +56,49 @@ class Tournament:
     def load(file_path):
         with open(file_path, 'r') as file:
             data = json.load(file)
-            # Extracting start and end dates from the nested 'dates' dictionary
-            dates = data.get('dates', {})
-            start_date_str = dates.get('from')
-            end_date_str = dates.get('to')
-            # Convert string dates to datetime objects
-            data['start_date'] = datetime.strptime(start_date_str, '%d-%m-%Y') if start_date_str else None
-            data['end_date'] = datetime.strptime(end_date_str, '%d-%m-%Y') if end_date_str else None
-            current_round = data.get('current_round', 1)
-            # Initialize Tournament with the modified data
-            tournament = Tournament(name=data.get('name'),
-                                    venue=data.get('venue'),
-                                    start_date=data['start_date'],
-                                    end_date=data['end_date'],
-                                    players=data.get('players'),
-                                    rounds=data.get('rounds'),
-                                    current_round=current_round)
-            return tournament
+
+            start_date = datetime.strptime(data.get('dates', {}).get('from'),
+                                           '%d-%m-%Y') if 'dates' in data and 'from' in data['dates'] else None
+            end_date = datetime.strptime(data.get('dates', {}).get('to'), '%d-%m-%Y') if 'dates' in data and 'to' in \
+                                                                                         data['dates'] else None
+
+            rounds = []
+            for round_data in data.get('rounds', []):
+                matches = []
+                for match_data in round_data:
+                    match = Match(
+                        player1_id=match_data['players'][0],
+                        player2_id=match_data['players'][1],
+                        winner_id=match_data.get('winner'),
+                        is_tie=match_data.get('winner') is None and match_data.get('completed', False),
+                        completed=match_data.get('completed', False)
+                    )
+                    matches.append(match)
+                rounds.append(Round(matches=matches))
+
+            return Tournament(
+                name=data['name'],
+                venue=data['venue'],
+                start_date=start_date,
+                end_date=end_date,
+                players=data['players'],
+                rounds=rounds,
+                current_round=data.get('current_round', 1)
+            )
 
     def calculate_final_points(self):
-        # Reset points for all players
+        # Reset points for all players before calculation
         for player_id in self.players:
             self.player_points[player_id] = 0
 
-        # Calculate points for each match in each round
+        # Calculate points for each match in every round
         for round_obj in self.rounds:
             for match in round_obj.matches:
                 if match.is_tie:
                     # Both players get 0.5 points in a tie
                     self.player_points[match.player1_id] += 0.5
                     self.player_points[match.player2_id] += 0.5
-                else:
+                elif match.winner_id is not None:
                     # Winner gets 1 point
                     self.player_points[match.winner_id] += 1
+

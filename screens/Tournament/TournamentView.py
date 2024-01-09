@@ -51,27 +51,34 @@ class TournamentView(BaseScreen):
             return GoBackCmd()
 
         current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
-        for idx, match in enumerate(current_round_matches, 1):
-            print(f"{idx}. Match ID: {match.id}, Players: {match.player1_id} vs {match.player2_id}")
+        ongoing_matches = [match for match in current_round_matches if not match.completed]
+
+        if not ongoing_matches:
+            print("All matches in the current round are completed.")
+            return GoBackCmd()
+
+        for idx, match in enumerate(ongoing_matches, 1):
+            print(f"{idx}. Players: {match.player1_id} vs {match.player2_id}")
 
         match_choice = self.input_string("Enter match number: ")
         if match_choice.isdigit():
-            match_choice = int(match_choice) - 1
-            if 0 <= match_choice < len(current_round_matches):
-                match = current_round_matches[match_choice]
+            match_index = int(match_choice) - 1
+            if 0 <= match_index < len(ongoing_matches):
+                match = ongoing_matches[match_index]
                 result_choice = self.input_string("Enter result (1: Win, 2: Loss, 3: Tie): ")
                 if result_choice == "1":
                     winner_id = self.input_string("Enter winner's player ID: ")
-                    return EnterResultsCmd(self.tournament, match.id, winner_id=winner_id)
+                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id)
                 elif result_choice == "2":
                     loser_id = self.input_string("Enter loser's player ID: ")
                     winner_id = match.player1_id if match.player2_id == loser_id else match.player2_id
-                    return EnterResultsCmd(self.tournament, match.id, winner_id=winner_id)
+                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id)
                 elif result_choice == "3":
-                    return EnterResultsCmd(self.tournament, match.id, is_tie=True)
+                    return EnterResultsCmd(self.tournament, match_index, is_tie=True)
                 else:
                     print("Invalid result choice.")
             else:
                 print("Invalid match number.")
         else:
             print("Please enter a valid number.")
+
