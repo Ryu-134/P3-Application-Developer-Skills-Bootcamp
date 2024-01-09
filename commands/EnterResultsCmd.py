@@ -1,10 +1,11 @@
 from commands.context import Context
 class EnterResultsCmd:
-    def __init__(self, tournament, match_index, winner_id=None, is_tie=False):
+    def __init__(self, tournament, match_index, winner_id=None, is_tie=False, club_manager=None):
         self.tournament = tournament
         self.match_index = match_index
         self.winner_id = winner_id
         self.is_tie = is_tie
+        self.club_manager = club_manager
 
     def execute(self):
         current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches

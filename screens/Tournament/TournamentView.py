@@ -68,11 +68,11 @@ class TournamentView(BaseScreen):
                 result_choice = self.input_string("Enter result (1: Win, 2: Loss, 3: Tie): ")
                 if result_choice == "1":
                     winner_id = self.input_string("Enter winner's player ID: ")
-                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id)
+                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, club_manager=self.club_manager)
                 elif result_choice == "2":
                     loser_id = self.input_string("Enter loser's player ID: ")
                     winner_id = match.player1_id if match.player2_id == loser_id else match.player2_id
-                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id)
+                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, club_manager=self.club_manager)
                 elif result_choice == "3":
                     return EnterResultsCmd(self.tournament, match_index, is_tie=True)
                 else:
