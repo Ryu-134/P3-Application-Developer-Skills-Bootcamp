@@ -4,6 +4,9 @@ class GenerateReportCmd:
         self.next_cmd=next_cmd
 
     def execute(self):
+        # Calculate final points for players
+        self.tournament.calculate_final_points()
+
         # Generate and print the tournament report
         print(f"Tournament Report for {self.tournament.name}")
         print(f"Dates: {self.tournament.start_date} - {self.tournament.end_date}")
@@ -12,7 +15,8 @@ class GenerateReportCmd:
         for player in sorted_players:
             print(f"Player ID: {player}, Points: {self.tournament.player_points.get(player, 0)}")
         print("Rounds and Matches:")
-        for round in self.tournament.rounds:
-            print(f"Round {round.number}")
+        for idx, round in enumerate(self.tournament.rounds, start=1):
+            print(f"Round {idx}")
             for match in round.matches:
-                print(f"  Match: {match.id}, Players: {match.player1_id} vs {match.player2_id}, Winner: {match.winner_id if not match.is_tie else 'Tie'}")
+                winner = 'Tie' if match.is_tie else match.winner_id
+                print(f"  Match: Players: {match.player1_id} vs {match.player2_id}, Winner: {winner}")
