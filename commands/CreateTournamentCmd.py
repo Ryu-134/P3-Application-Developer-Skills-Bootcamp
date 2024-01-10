@@ -1,7 +1,8 @@
 from datetime import datetime
+import sys
 from models.tournament import Tournament
 from commands.base import BaseCommand
-from commands.noop import NoopCmd
+from models.round import Round
 
 class CreateTournamentCmd(BaseCommand):
     def __init__(self, name, venue, start_date, end_date, num_rounds, save_function):
@@ -13,15 +14,18 @@ class CreateTournamentCmd(BaseCommand):
         self.save_function = save_function
 
     def execute(self):
+        # Initialize rounds as Round objects
+        round_objects = [Round(matches=[]) for _ in range(self.num_rounds)]
+
         new_tournament = Tournament(
             name=self.name,
             venue=self.venue,
             start_date=self.start_date,
             end_date=self.end_date,
             players=[],
-            rounds=[{'matches': []} for _ in range(self.num_rounds)],
-            current_round=1
+            rounds=round_objects,  # Use Round objects instead of dicts
+            current_round=0
         )
         self.save_function(new_tournament)
         print(f"Tournament '{self.name}' created successfully.")
-        return NoopCmd("main-menu")
+        sys.exit()
