@@ -1,16 +1,15 @@
-from commands import UpdateMatchResultCmd, GoBackCmd
+from commands import GoBackCmd
+from commands.EnterResultsCmd import EnterResultsCmd
 from screens.base_screen import BaseScreen
 
 class RoundResultsEntryView(BaseScreen):
-    """Screen for entering results of matches in the current round of a tournament."""
-
     def __init__(self, tournament):
         self.tournament = tournament
 
     def display(self):
         print(f"Entering results for {self.tournament.name}, Round {self.tournament.current_round}")
-        for idx, match in enumerate(self.tournament.get_current_round_matches(), 1):
-            print(f"{idx}. {match.player1} vs {match.player2} - Enter '1' for {match.player1} wins, '2' for {match.player2} wins, 'T' for tie")
+        for idx, match in enumerate(self.tournament.rounds[self.tournament.current_round - 1].matches, start=1):
+            print(f"{idx}. {match.player1_id} vs {match.player2_id} - Enter '1' for player1 wins, '2' for player2 wins, 'T' for tie")
 
     def get_command(self):
         while True:
@@ -20,9 +19,19 @@ class RoundResultsEntryView(BaseScreen):
             else:
                 try:
                     match_number, result = choice.split()
-                    match_number = int(match_number)
-                    if match_number in range(1, len(self.tournament.get_current_round_matches()) + 1):
-                        return UpdateMatchResultCmd(self.tournament, match_number, result)
+                    match_index = int(match_number) - 1  # Adjust for 0-based index
+                    if 0 <= match_index < len(self.tournament.rounds[self.tournament.current_round - 1].matches):
+                        winner_id = self.determine_winner(match_index, result)
+                        is_tie = result.lower() == 't'
+                        print(f"Debug: Getting command for match index: {match_index}")  # New debug statement
+                        return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, is_tie=is_tie)
                 except ValueError:
-                    pass  # Invalid input format
-                print("Invalid input. Please try again.")
+                    print("Invalid input. Please try again.")
+
+    def determine_winner(self, match_index, result):
+        match = self.tournament.rounds[self.tournament.current_round - 1].matches[match_index]
+        if result == '1':
+            return match.player1_id
+        elif result == '2':
+            return match.player2_id
+        return None

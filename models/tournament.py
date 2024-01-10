@@ -1,6 +1,6 @@
 from datetime import datetime
-from .round import Round
-from .match import Match
+from models.round import Round
+from models.match import Match
 import json
 import random
 
@@ -131,6 +131,7 @@ class Tournament:
 
             if potential_opponents:
                 opponent = random.choice(potential_opponents)
+                sorted_players.remove(opponent)
                 print(f"Selected opponent for {player1}: {opponent}")
 
             else:
@@ -139,7 +140,6 @@ class Tournament:
 
 
             new_matches.append(Match(player1_id=player1, player2_id=opponent))
-            sorted_players.remove(opponent)
 
         # Create and add the new round
         new_round = Round(matches=new_matches)

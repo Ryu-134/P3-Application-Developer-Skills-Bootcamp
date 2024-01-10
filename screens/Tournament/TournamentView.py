@@ -1,4 +1,4 @@
-from commands import RegisterPlayerCmd, EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
+from commands import EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
 from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
 from screens.base_screen import BaseScreen
 
