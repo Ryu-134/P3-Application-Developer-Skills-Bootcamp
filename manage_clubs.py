@@ -1,5 +1,6 @@
 from commands import ClubListCmd
-from screens import ClubCreate, ClubView, MainMenu, PlayerEdit, PlayerView
+from screens import ClubCreate, ClubView, MainMenu, PlayerView
+from screens.players.edit import PlayerEdit
 from models.club_manager import ClubManager
 from models.tournament import Tournament
 from screens.Tournament.TournamentListView import TournamentListView
@@ -10,7 +11,7 @@ from commands.context import Context
 import json
 from pathlib import Path
 
-#Version 1.6
+
 class App:
     """The main controller for the club management program"""
 
