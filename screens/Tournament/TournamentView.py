@@ -1,5 +1,6 @@
-from commands import EnterResultsCmd, AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
+from commands import AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
 from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
+from screens.Tournament.RoundResultsEntryView import RoundResultsEntryView
 from screens.base_screen import BaseScreen
 
 class TournamentView(BaseScreen):
@@ -8,6 +9,9 @@ class TournamentView(BaseScreen):
     def __init__(self, tournament, club_manager, players=None):
         self.tournament = tournament
         self.club_manager = club_manager
+        if not self.club_manager:
+            raise ValueError("Club manager cannot be None")
+        self.players = players if players is not None else self.fetch_players()
         self.players = players if players is not None else self.fetch_players()
     def display(self):
         print(f"Tournament: {self.tournament.name}")
@@ -31,60 +35,47 @@ class TournamentView(BaseScreen):
         while True:
             choice = self.input_string("Enter your choice: ")
             if choice == "1":
-                return NoopCmd("player-registration", tournament=self.tournament, players=self.players)
+                # For registering a player, refresh the tournament view
+                return NoopCmd("player-registration", tournament=self.tournament, players=self.players,
+                               next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "2":
-                return self.enter_results()
+                # Enter results using RoundResultsEntryView
+                command = self.enter_results()
+                return command if command else RefreshTournamentViewCmd(self.tournament, self.club_manager)
             elif choice == "3":
-                return AdvanceRoundCmd(self.tournament, self.club_manager)
+                # After advancing to the next round, refresh the tournament view
+                return AdvanceRoundCmd(self.tournament, self.club_manager,
+                                       next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "4":
-                return GenerateReportCmd(self.tournament)
+                # After generating a report, refresh the tournament view
+                return GenerateReportCmd(self.tournament,
+                                         next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "5":
                 return GoBackCmd()
             else:
                 print("Invalid choice. Please try again.")
 
+    def enter_results(self):
+        current_round_index = self.tournament.current_round - 1
+        if current_round_index < len(self.tournament.rounds):
+            current_round_matches = self.tournament.rounds[current_round_index].matches
+            if all(match.completed for match in current_round_matches):
+                print("All matches in the current round are completed.")
+                # Instead of refreshing the view, return a command to go back to the tournament options screen
+                return RefreshTournamentViewCmd(self.tournament, self.club_manager)
+            else:
+                results_entry_view = RoundResultsEntryView(self.tournament, self.club_manager)
+                results_entry_view.display()
+                return results_entry_view.get_command()
+        else:
+            print("No current round available.")
+            return RefreshTournamentViewCmd(self.tournament, self.club_manager)
+
     def fetch_players(self):
         return self.club_manager.fetch_all_players()
 
-
-
-    def enter_results(self):
-        if self.tournament.current_round is None or self.tournament.current_round > len(self.tournament.rounds):
-            print("No current round available.")
-            return self.refresh_tournament_view()
-
-        current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
-        ongoing_matches = [match for match in current_round_matches if not match.completed]
-
-        if not ongoing_matches:
-            print("All matches in the current round are completed.")
-            return self.refresh_tournament_view()
-
-        for idx, match in enumerate(ongoing_matches, 1):
-            print(f"{idx}. Players: {match.player1_id} vs {match.player2_id}")
-
-        match_choice = self.input_string("Enter match number: ")
-        if match_choice.isdigit():
-            match_index = int(match_choice) - 1
-            if 0 <= match_index < len(ongoing_matches):
-                match = ongoing_matches[match_index]
-                result_choice = self.input_string("Enter result (1: Win, 2: Loss, 3: Tie): ")
-                if result_choice == "1":
-                    winner_id = self.input_string("Enter winner's player ID: ")
-                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, club_manager=self.club_manager)
-                elif result_choice == "2":
-                    loser_id = self.input_string("Enter loser's player ID: ")
-                    winner_id = match.player1_id if match.player2_id == loser_id else match.player2_id
-                    return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, club_manager=self.club_manager)
-                elif result_choice == "3":
-                    return EnterResultsCmd(self.tournament, match_index, is_tie=True, club_manager=self.club_manager)
-                else:
-                    print("Invalid result choice.")
-            else:
-                print("Invalid match number.")
-        else:
-            print("Please enter a valid number.")
-
     def refresh_tournament_view(self):
-        # Returns a command to refresh the tournament view
-        return RefreshTournamentViewCmd(self.tournament, self.club_manager)
+        if self.club_manager:
+            return self.club_manager.fetch_all_players()
+        else:
+            raise ValueError("Club manager is not set, cannot fetch players")

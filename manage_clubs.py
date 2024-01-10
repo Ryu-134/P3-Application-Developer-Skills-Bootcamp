@@ -1,4 +1,4 @@
-from commands import ClubListCmd, NoopCmd
+from commands import ClubListCmd
 from screens import ClubCreate, ClubView, MainMenu, PlayerEdit, PlayerView
 from models.club_manager import ClubManager
 from models.tournament import Tournament
@@ -8,7 +8,6 @@ from screens.Tournament.PlayerRegistrationView import PlayerRegistrationView
 from screens.Tournament.TournamentCreateView import TournamentCreateView
 from commands.context import Context  
 import json
-import os
 from pathlib import Path
 
 #Version 1.6

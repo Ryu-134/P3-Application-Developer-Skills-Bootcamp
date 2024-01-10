@@ -1,6 +1,7 @@
 class GenerateReportCmd:
-    def __init__(self, tournament):
+    def __init__(self, tournament, next_cmd=None):
         self.tournament = tournament
+        self.next_cmd=next_cmd
 
     def execute(self):
         # Generate and print the tournament report
