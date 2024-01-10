@@ -1,7 +1,8 @@
-from commands import AdvanceRoundCmd, GenerateReportCmd, GoBackCmd, NoopCmd
+from commands import GenerateReportCmd, GoBackCmd, NoopCmd
 from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
 from screens.Tournament.RoundResultsEntryView import RoundResultsEntryView
 from screens.base_screen import BaseScreen
+from screens.Tournament.AdvanceRoundView import AdvanceRoundView
 
 class TournamentView(BaseScreen):
     """Screen for viewing and managing a specific tournament."""
@@ -44,7 +45,7 @@ class TournamentView(BaseScreen):
                 return command if command else RefreshTournamentViewCmd(self.tournament, self.club_manager)
             elif choice == "3":
                 # After advancing to the next round, refresh the tournament view
-                return AdvanceRoundCmd(self.tournament, self.club_manager,
+                return AdvanceRoundView(self.tournament, self.club_manager,
                                        next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "4":
                 # After generating a report, refresh the tournament view

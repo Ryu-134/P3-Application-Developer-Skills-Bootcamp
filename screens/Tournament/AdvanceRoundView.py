@@ -1,7 +1,8 @@
 from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
 from commands.context import Context
 
-class AdvanceRoundCmd:
+
+class AdvanceRoundView:
     def __init__(self, tournament, club_manager, next_cmd=None):
         self.tournament = tournament
         self.club_manager = club_manager
