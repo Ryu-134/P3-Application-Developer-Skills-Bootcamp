@@ -5,7 +5,6 @@ from .noop import NoopCmd
 from .update_player import PlayerUpdateCmd
 from .RegisterPlayerCmd import RegisterPlayerCmd
 from .EnterResultsCmd import EnterResultsCmd
-from .GenerateReportCmd import GenerateReportCmd
 from .GoBackCmd import GoBackCmd
 
 __all__ = [
@@ -16,5 +15,4 @@ __all__ = [
     "PlayerUpdateCmd",
     "RegisterPlayerCmd",
     "EnterResultsCmd",
-    "GenerateReportCmd",
 ]
