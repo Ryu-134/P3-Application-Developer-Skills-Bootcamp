@@ -1,9 +1,11 @@
-from commands import GoBackCmd, NoopCmd
+from commands import NoopCmd
 from commands.RefreshTournamentViewCmd import RefreshTournamentViewCmd
+from commands.GoBackCmd import GoBackCmd
 from screens.Tournament.RoundResultsEntryView import RoundResultsEntryView
 from screens.base_screen import BaseScreen
 from screens.Tournament.AdvanceRoundView import AdvanceRoundView
 from screens.Tournament.TournamentReportView import TournamentReportView
+
 
 class TournamentView(BaseScreen):
     """Screen for viewing and managing a specific tournament."""
@@ -15,6 +17,7 @@ class TournamentView(BaseScreen):
             raise ValueError("Club manager cannot be None")
         self.players = players if players is not None else self.fetch_players()
         self.players = players if players is not None else self.fetch_players()
+
     def display(self):
         print(f"Tournament: {self.tournament.name}")
         print(f"Venue: {self.tournament.venue}")

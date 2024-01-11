@@ -117,6 +117,8 @@ class App:
                 print("Exiting the application. Bye!")
                 break
 
+
 if __name__ == "__main__":
     app = App()
     app.run()
+

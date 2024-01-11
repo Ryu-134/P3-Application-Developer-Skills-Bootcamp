@@ -4,6 +4,7 @@ from models.match import Match
 import json
 import random
 
+
 class Tournament:
     def __init__(self, name, venue, start_date, end_date, players=None, rounds=None, current_round=1, total_rounds=4):
         self.name = name
@@ -15,8 +16,6 @@ class Tournament:
         self.current_round = current_round
         self.rounds = rounds if rounds else []
         self.total_rounds = total_rounds
-
-
         for player_id in self.players:
             self.player_points[player_id] = 0
 
@@ -120,34 +119,25 @@ class Tournament:
         # Sort players by points in descending order
         sorted_players = sorted(self.players, key=lambda p: self.player_points[p], reverse=True)
         print(f"Sorted players by points: {sorted_players}")
-
-
         # Create new matches for the next round
         new_matches = []
         while len(sorted_players) >= 2:
             player1 = sorted_players.pop(0)
             potential_opponents = [p for p in sorted_players if not self.has_played_against(player1, p)]
             print(f"Potential opponents for {player1}: {potential_opponents}")
-
-
             if potential_opponents:
                 opponent = random.choice(potential_opponents)
                 sorted_players.remove(opponent)
                 print(f"Selected opponent for {player1}: {opponent}")
-
             else:
                 opponent = sorted_players.pop(0)
                 print(f"No potential opponents left. Selected opponent for {player1}: {opponent}")
-
-
             new_matches.append(Match(player1_id=player1, player2_id=opponent))
-
         # Create and add the new round
         new_round = Round(matches=new_matches)
         self.rounds.append(new_round)
         self.current_round += 1
         print(f"New round added. Current round is now: {self.current_round}")
-
 
     def has_played_against(self, player1, player2):
         # Check if the players have already played against each other

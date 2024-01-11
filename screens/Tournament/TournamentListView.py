@@ -1,6 +1,6 @@
 from screens.base_screen import BaseScreen
-from commands import NoopCmd, ExitCmd
-from commands import GoBackCmd
+from commands import NoopCmd
+from commands.GoBackCmd import GoBackCmd
 
 class TournamentListView(BaseScreen):
     def __init__(self, tournaments):

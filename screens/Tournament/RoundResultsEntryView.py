@@ -13,8 +13,8 @@ class RoundResultsEntryView(BaseScreen):
         current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
         for idx, match in enumerate(current_round_matches, start=1):
             if not match.completed:
-                print(f"{idx}. {match.player1_id} vs {match.player2_id} - Enter '1' for player1 wins, '2' for player2 wins, 'T' for tie")
-
+                print(f"{idx}. {match.player1_id} vs {match.player2_id}"
+                      f" - Enter '1' for player1 wins, '2' for player2 wins, 'T' for tie")
 
     def get_command(self):
         while True:
@@ -28,7 +28,8 @@ class RoundResultsEntryView(BaseScreen):
                     if 0 <= match_index < len(self.tournament.rounds[self.tournament.current_round - 1].matches):
                         winner_id = self.determine_winner(match_index, result_str)
                         is_tie = result_str.lower() == 't'
-                        return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, is_tie=is_tie, club_manager=self.club_manager)
+                        return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, is_tie=is_tie,
+                                               club_manager=self.club_manager)
                     else:
                         print("Invalid match number. Please try again.")
                 except ValueError:

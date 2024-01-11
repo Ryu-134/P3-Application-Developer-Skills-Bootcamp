@@ -1,5 +1,7 @@
-from commands import RegisterPlayerCmd, GoBackCmd
+from commands import RegisterPlayerCmd
+from commands.GoBackCmd import GoBackCmd
 from screens.base_screen import BaseScreen
+
 
 class PlayerRegistrationView(BaseScreen):
     """Screen for registering a player for a tournament."""

@@ -3,6 +3,7 @@ from commands.CreateTournamentCmd import CreateTournamentCmd
 from datetime import datetime
 from commands.GoBackCmd import GoBackCmd
 
+
 class TournamentCreateView(BaseScreen):
     def __init__(self, save_function):
         self.save_function = save_function
