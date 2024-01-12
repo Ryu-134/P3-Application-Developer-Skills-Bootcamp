@@ -14,6 +14,10 @@ class AdvanceRoundView:
             print("Advancing to the next round cancelled.")
             return RefreshTournamentViewCmd(self.tournament, self.club_manager)
 
+        # Debug: Check if current round is final and status of matches
+        print(f"Debug: Checking if current round is final - Current Round: {self.tournament.current_round}, Total Rounds: {self.tournament.total_rounds}")
+        print(f"Debug: Checking if all matches in the last round are completed.")
+
         # Check if the current round is the final round and all matches are completed
         if self.tournament.current_round == self.tournament.total_rounds and all(
                 match.completed for match in self.tournament.rounds[-1].matches):

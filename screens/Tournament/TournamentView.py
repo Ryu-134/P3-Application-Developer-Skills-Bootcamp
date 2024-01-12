@@ -23,13 +23,13 @@ class TournamentView(BaseScreen):
         print(f"Venue: {self.tournament.venue}")
         print(f"Start Date: {self.tournament.start_date}")
         print(f"End Date: {self.tournament.end_date}")
-        print(f"Number of Rounds: {len(self.tournament.rounds)}")
+        print(f"Number of Rounds: {self.tournament.total_rounds}")
         if self.tournament.current_round == 0:
             current_round_text = "Tournament hasn't started"
-        elif self.tournament.current_round:
-            current_round_text = f"Round {self.tournament.current_round}"
-        else:
+        elif self.tournament.current_round > self.tournament.total_rounds:
             current_round_text = "Tournament Ended"
+        else:
+            current_round_text = f"Round {self.tournament.current_round}"
         print(f"Current Round: {current_round_text}")
         print("Players: ")
         for player_id in self.tournament.players:

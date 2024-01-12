@@ -16,6 +16,8 @@ class EnterResultsCmd:
 
         if 0 <= self.match_index < len(current_round_matches):
             match = current_round_matches[self.match_index]
+            print(f"Debug: Match status before updating result - Match: {self.match_index + 1}, Completed: {match.completed}")
+
             if self.is_tie:
                 match.set_tie()
                 print(f"Debug: Setting tie for match at index {self.match_index}")

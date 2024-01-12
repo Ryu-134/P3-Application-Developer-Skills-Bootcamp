@@ -10,7 +10,19 @@ class RoundResultsEntryView(BaseScreen):
 
     def display(self):
         print(f"Entering results for {self.tournament.name}, Round {self.tournament.current_round}")
-        current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
+
+        # Calculate the index for the current round in the rounds array (0-based index)
+        current_round_index = self.tournament.current_round - 1
+        current_round_matches = self.tournament.rounds[current_round_index].matches
+
+        # Debug: Display current round index and the number of matches in this round
+        print(f"Debug: Current round index - {current_round_index}")
+        print(f"Debug: Number of matches in current round - {len(current_round_matches)}")
+
+        # Debug: Display the status of each match in the current round
+        for idx, match in enumerate(current_round_matches, start=1):
+            print(f"Debug: Match {idx}: {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
+
         for idx, match in enumerate(current_round_matches, start=1):
             if not match.completed:
                 print(f"{idx}. {match.player1_id} vs {match.player2_id}"

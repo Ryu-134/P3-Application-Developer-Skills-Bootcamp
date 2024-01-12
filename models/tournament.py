@@ -48,7 +48,8 @@ class Tournament:
             "players": self.players,
             "rounds": [[match.to_json() for match in round_obj.matches] for round_obj in self.rounds],
             "player_points": self.player_points,
-            "current_round": self.current_round
+            "current_round": self.current_round,
+            "total_rounds": self.total_rounds
         }
 
     def save(self, file_path):
@@ -79,6 +80,10 @@ class Tournament:
                     matches.append(match)
                 rounds.append(Round(matches=matches))
 
+            total_rounds = data.get('number_of_rounds', len(rounds))  # Correctly read the total number of rounds
+            current_round = data.get('current_round')
+            if current_round is None:
+                current_round = total_rounds
             return Tournament(
                 name=data['name'],
                 venue=data['venue'],
@@ -86,7 +91,9 @@ class Tournament:
                 end_date=end_date,
                 players=data['players'],
                 rounds=rounds,
-                current_round=data.get('current_round', 1)
+                current_round=current_round,
+                total_rounds=total_rounds
+
             )
 
 
@@ -118,44 +125,44 @@ class Tournament:
 
     def advance_to_next_round(self):
         print("Advancing to next round...")
-        # Sort players by points in descending order
+        if self.current_round >= self.total_rounds:
+            print("Cannot advance, already at the total number of rounds.")
+            return
+
         sorted_players = sorted(self.players, key=lambda p: self.player_points[p], reverse=True)
         print(f"Sorted players by points: {sorted_players}")
-        # Create new matches for the next round
+
         new_matches = []
         while len(sorted_players) >= 2:
             player1 = sorted_players.pop(0)
             potential_opponents = [p for p in sorted_players if not self.has_played_against(player1, p)]
             print(f"Potential opponents for {player1}: {potential_opponents}")
+
             if potential_opponents:
                 opponent = random.choice(potential_opponents)
                 sorted_players.remove(opponent)
-                print(f"Selected opponent for {player1}: {opponent}")
             else:
                 opponent = sorted_players.pop(0)
-                print(f"No potential opponents left. Selected opponent for {player1}: {opponent}")
-            new_matches.append(Match(player1_id=player1, player2_id=opponent, is_tie=False))
-            print(f"Debug: Adding match {player1} vs {opponent}")  # Debug statement
 
-        # Create and add the new round
-        new_round = Round(matches=new_matches)
-        self.rounds.append(new_round)
-        print(f"Debug: Current round before advancing: {self.current_round}")
+            new_match = Match(player1_id=player1, player2_id=opponent, is_tie=False)
+            new_matches.append(new_match)
+            print(f"Debug: Match created - {player1} vs {opponent}, Completed: {new_match.completed}")
+
+        # Check if next round exists, else create a new one
+        if self.current_round < len(self.rounds):
+            self.rounds[self.current_round].matches = new_matches
+            print("Debug: Added matches to the existing round.")
+        else:
+            new_round = Round(matches=new_matches)
+            self.rounds.append(new_round)
+            print("Debug: Created a new round and added matches.")
 
         self.current_round += 1
-        print(f"Debug: Current round after advancing: {self.current_round}")
+        print(f"Debug: Advanced to Round {self.current_round}")
 
         file_path = Path('data/tournaments') / f'{self.name}.json'
         self.save(file_path)
-        print(f"New round added. Current round is now: {self.current_round}")
-
-        # Debug: Print the state of all rounds and matches after adding a new round
-        for i, round in enumerate(self.rounds):
-            print(f"Debug: Round {i + 1} - Matches: {len(round.matches)}")
-            for match in round.matches:
-                print(f"Debug: Match - {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
-
-
+        print("Tournament saved after advancing round.")
 
     def has_played_against(self, player1, player2):
         # Check if the players have already played against each other
