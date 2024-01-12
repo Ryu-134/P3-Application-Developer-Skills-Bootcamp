@@ -87,8 +87,7 @@ class App:
                         'players': all_players,
                         'context': self.context
                     }
-            elif screen_class == TournamentCreateView:
-                screen_args = {'save_function': self.save_tournament}
+
 
             try:
                 screen = screen_class(**screen_args)

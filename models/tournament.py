@@ -1,6 +1,7 @@
 from datetime import datetime
 from models.round import Round
 from models.match import Match
+from pathlib import Path
 import json
 import random
 
@@ -42,10 +43,10 @@ class Tournament:
         return {
             "name": self.name,
             "venue": self.venue,
-            "start_date": self.start_date.strftime('%d-%m-%Y'),
-            "end_date": self.end_date.strftime('%d-%m-%Y'),
+            "start_date": self.start_date.strftime('%d-%m-%Y') if self.start_date else None,
+            "end_date": self.end_date.strftime('%d-%m-%Y') if self.end_date else None,
             "players": self.players,
-            "rounds": [round.to_json() for round in self.rounds],
+            "rounds": [[match.to_json() for match in round_obj.matches] for round_obj in self.rounds],
             "player_points": self.player_points,
             "current_round": self.current_round
         }
@@ -73,8 +74,8 @@ class Tournament:
                         player2_id=match_data['players'][1],
                         winner_id=match_data.get('winner'),
                         is_tie=match_data.get('winner') is None and match_data.get('completed', False),
-                        completed=match_data.get('completed', False)
                     )
+                    match.completed = match_data.get('completed', False)
                     matches.append(match)
                 rounds.append(Round(matches=matches))
 
@@ -87,6 +88,7 @@ class Tournament:
                 rounds=rounds,
                 current_round=data.get('current_round', 1)
             )
+
 
     def calculate_final_points(self):
         # Reset points for all players before calculation
@@ -132,12 +134,28 @@ class Tournament:
             else:
                 opponent = sorted_players.pop(0)
                 print(f"No potential opponents left. Selected opponent for {player1}: {opponent}")
-            new_matches.append(Match(player1_id=player1, player2_id=opponent))
+            new_matches.append(Match(player1_id=player1, player2_id=opponent, is_tie=False))
+            print(f"Debug: Adding match {player1} vs {opponent}")  # Debug statement
+
         # Create and add the new round
         new_round = Round(matches=new_matches)
         self.rounds.append(new_round)
+        print(f"Debug: Current round before advancing: {self.current_round}")
+
         self.current_round += 1
+        print(f"Debug: Current round after advancing: {self.current_round}")
+
+        file_path = Path('data/tournaments') / f'{self.name}.json'
+        self.save(file_path)
         print(f"New round added. Current round is now: {self.current_round}")
+
+        # Debug: Print the state of all rounds and matches after adding a new round
+        for i, round in enumerate(self.rounds):
+            print(f"Debug: Round {i + 1} - Matches: {len(round.matches)}")
+            for match in round.matches:
+                print(f"Debug: Match - {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
+
+
 
     def has_played_against(self, player1, player2):
         # Check if the players have already played against each other

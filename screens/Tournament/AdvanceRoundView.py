@@ -25,6 +25,10 @@ class AdvanceRoundView:
             self.tournament.advance_to_next_round()
             print(f"Advanced to round {self.tournament.current_round} in {self.tournament.name}")
 
+            # Debug: Print the state of new matches
+            for match in self.tournament.rounds[-1].matches:
+                print(f"Debug: New match - {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
+
             # Execute next_cmd if provided, to refresh the tournament view
             return self.next_cmd.execute() if self.next_cmd else Context(screen="tournament-view",
                                                                          tournament=self.tournament,

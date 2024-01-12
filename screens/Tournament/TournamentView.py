@@ -68,8 +68,15 @@ class TournamentView(BaseScreen):
 
     def enter_results(self):
         current_round_index = self.tournament.current_round - 1
+        print(f"Debug: Current round index - {current_round_index}")  # Debug statement
+
         if current_round_index < len(self.tournament.rounds):
             current_round_matches = self.tournament.rounds[current_round_index].matches
+            print(f"Debug: Number of matches in current round - {len(current_round_matches)}")  # Debug statement
+            for i, match in enumerate(current_round_matches):
+                print(f"Debug: Match {i + 1} status - {'completed' if match.completed else 'not completed'}")  # Debug statement
+            for match in current_round_matches:
+                print(f"Match between {match.player1_id} and {match.player2_id} completed: {match.completed}")
             if all(match.completed for match in current_round_matches):
                 print("All matches in the current round are completed.")
                 # Instead of refreshing the view, return a command to go back to the tournament options screen

@@ -28,6 +28,11 @@ class RoundResultsEntryView(BaseScreen):
                     if 0 <= match_index < len(self.tournament.rounds[self.tournament.current_round - 1].matches):
                         winner_id = self.determine_winner(match_index, result_str)
                         is_tie = result_str.lower() == 't'
+
+                        # Debugging: Check the match state before applying results
+                        match = self.tournament.rounds[self.tournament.current_round - 1].matches[match_index]
+                        print(f"Debug: Before updating - Match {match_index + 1}, Completed: {match.completed}")
+
                         return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, is_tie=is_tie,
                                                club_manager=self.club_manager)
                     else:
