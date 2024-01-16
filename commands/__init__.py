@@ -5,7 +5,6 @@ from .noop import NoopCmd
 from .update_player import PlayerUpdateCmd
 from .RegisterPlayerCmd import RegisterPlayerCmd
 from .EnterResultsCmd import EnterResultsCmd
-from .GoBackCmd import GoBackCmd
 
 __all__ = [
     "ClubCreateCmd",

@@ -6,9 +6,10 @@ from commands.GoBackCmd import GoBackCmd
 
 class TournamentCreateView(BaseScreen):
     def __init__(self):
-        pass  # save_function is removed
+        pass
 
-    def display(self):
+    @staticmethod
+    def display():
         print("\nCreate a New Tournament")
         print("Please enter the following information:")
 

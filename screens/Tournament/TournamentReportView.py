@@ -19,9 +19,9 @@ class TournamentReportView:
         for player in sorted_players:
             print(f"Player ID: {player}, Points: {self.tournament.player_points.get(player, 0)}")
         print("Rounds and Matches:")
-        for idx, round in enumerate(self.tournament.rounds, start=1):
+        for idx, tournament_round in enumerate(self.tournament.rounds, start=1):
             print(f"Round {idx}")
-            for match in round.matches:
+            for match in tournament_round.matches:
                 winner = 'Tie' if match.is_tie else match.winner_id
                 print(f"  Match: Players: {match.player1_id} vs {match.player2_id}, Winner: {winner}")
         return Context(screen="main-menu")

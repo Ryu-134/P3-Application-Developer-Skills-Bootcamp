@@ -56,11 +56,11 @@ class TournamentView(BaseScreen):
             elif choice == "3":
                 # After advancing to the next round, refresh the tournament view
                 return AdvanceRoundView(self.tournament, self.club_manager,
-                                       next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
+                                        next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "4":
                 # After generating a report, refresh the tournament view
                 return TournamentReportView(self.tournament,
-                                         next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
+                                            next_cmd=RefreshTournamentViewCmd(self.tournament, self.club_manager))
             elif choice == "5":
                 return GoBackCmd()
             else:
