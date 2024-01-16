@@ -1,7 +1,10 @@
+
+---
+
 # Chess Tournament Management Program
 
 ## Description
-This Python application is designed for managing chess tournaments. It allows users to create tournaments, register players, enter match results, and generate tournament reports, all in an offline environment.
+This Python application is designed for managing chess tournaments. It allows users to create tournaments, register players, enter match results, and generate tournament reports, all in an offline environment. The application is compatible with Windows and MacOS operating systems.
 
 ## Installation
 
@@ -20,7 +23,7 @@ This Python application is designed for managing chess tournaments. It allows us
    ```
 
 ## Running the Program
-To start the program, run the following command in your terminal:
+To start the program, run the following command in your terminal (Command Prompt on Windows, or Terminal on MacOS):
 ```
 python manage_clubs.py
 ```

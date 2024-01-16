@@ -30,7 +30,6 @@ class App:
     }
 
     def __init__(self):
-        # We start with the list of clubs (main menu)
         self.club_manager = ClubManager()
         self.tournaments = self.load_tournaments()
         self.create_tournament_view = None

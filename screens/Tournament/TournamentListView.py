@@ -18,7 +18,7 @@ class TournamentListView(BaseScreen):
             choice = self.input_string("Select a tournament number or type 'exit' to go back: ")
 
             if choice.lower() == 'exit':
-                return GoBackCmd()  # Assuming you have a command to go back
+                return GoBackCmd()
 
             if choice.isdigit():
                 choice = int(choice)

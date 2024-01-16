@@ -11,9 +11,7 @@ class EnterResultsCmd:
         self.club_manager = club_manager
 
     def execute(self):
-        print(f"Executing EnterResultsCmd with match index: {self.match_index}")
         current_round_matches = self.tournament.rounds[self.tournament.current_round - 1].matches
-        print(f"Match index: {self.match_index}")
 
         if 0 <= self.match_index < len(current_round_matches):
             match = current_round_matches[self.match_index]

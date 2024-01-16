@@ -115,10 +115,8 @@ class Tournament:
     def can_advance_round(self):
         # Check if all matches in the current round are completed
         all_matches_completed = all(match.completed for match in self.rounds[self.current_round - 1].matches)
-
         # Check if the current round is not the last one
         is_last_round = self.current_round == self.total_rounds
-
         # The tournament can advance to the next round only if all matches are completed and if it's not the last round
         return all_matches_completed and not is_last_round
 
