@@ -1,33 +1,49 @@
-# Starter code - OpenClassrooms WPS | P3
+# Chess Tournament Management Program
 
-This repository contains the work that has been done so far on the chess tournament program.
+## Description
+This Python application is designed for managing chess tournaments. It allows users to create tournaments, register players, enter match results, and generate tournament reports, all in an offline environment.
 
-### Data files
+## Installation
 
-There are data files provided:
-- JSON files for the chess clubs of Springfield and Cornville
-- JSON files for two tournaments: one completed, and one in progress
+### Prerequisites
+- Python 3.x
+- pip (Python package manager)
 
-### Models
+### Setup
+1. Clone the repository to your local machine:
+   ```
+   git clone https://github.com/Ryu-134/P3-Application-Developer-Skills-Bootcamp.git
+   ```
+2. Navigate to the cloned directory:
+   ```
+   cd P3-Application-Developer-Skills-Bootcamp
+   ```
 
-This package contains the models already defined by the application:
-* `Player` is a class that represents a chess player
-* `Club` is a class that represents a chess club (including `Player`s)
-* `ClubManager` is a manager class that allows to manage all clubs (and create new ones)
+## Running the Program
+To start the program, run the following command in your terminal:
+```
+python manage_clubs.py
+```
 
-### Screens
+## Using the Program
+- **Main Menu**: Navigate through options to view/manage tournaments, or create a new tournament.
+- **Tournament Management**: 
+  - Register players for a tournament.
+  - Enter results for current round matches.
+  - Advance to the next round.
+  - Generate a tournament report.
+- **Exiting**: Follow on-screen instructions to navigate back to the main menu or exit the program.
 
-This package contains classes that are used by the application to display information from the models on the screen.
-Each screen returns a Command instance (= the action to be carried on).
+## Generating Flake8 Report
+Ensure `flake8` and `flake8-html` are installed:
+```
+pip install flake8 flake8-html
+```
+Run `flake8` to generate a report:
+```
+flake8 --format=html --htmldir=flake8_report
+```
+The report will be saved in the `flake8_report` directory.
 
-### Commands
+---
 
-This package contains "commands" - instances of classes that are used to perform operations from the program.
-Commands follow a *template pattern*. They **must** define the `execute` method.
-When executed, a command returns a context.
-
-### Main application
-
-The main application is controlled by `manage_clubs.py`. Based on the current Context instance, it instantiates the screens and run them. The command returned by the screen is then executed to obtain the next context.
-
-The main application is an infinite loop and stops when a context has the attribute `run` set to False.
