@@ -1,10 +1,8 @@
-
-
-# Existing imports
 from screens.base_screen import BaseScreen
 from commands.CreateTournamentCmd import CreateTournamentCmd
 from datetime import datetime
 from commands.GoBackCmd import GoBackCmd
+
 
 class TournamentCreateView(BaseScreen):
     def __init__(self):

@@ -96,7 +96,6 @@ class Tournament:
 
             )
 
-
     def calculate_final_points(self):
         # Reset points for all players before calculation
         for player_id in self.players:
@@ -146,19 +145,19 @@ class Tournament:
 
             new_match = Match(player1_id=player1, player2_id=opponent, is_tie=False)
             new_matches.append(new_match)
-            print(f"Debug: Match created - {player1} vs {opponent}, Completed: {new_match.completed}")
+            print(f"Match created - {player1} vs {opponent}, Completed: {new_match.completed}")
 
         # Check if next round exists, else create a new one
         if self.current_round < len(self.rounds):
             self.rounds[self.current_round].matches = new_matches
-            print("Debug: Added matches to the existing round.")
+            print("Added matches to the existing round.")
         else:
             new_round = Round(matches=new_matches)
             self.rounds.append(new_round)
-            print("Debug: Created a new round and added matches.")
+            print("Created a new round and added matches.")
 
         self.current_round += 1
-        print(f"Debug: Advanced to Round {self.current_round}")
+        print(f"Advanced to Round {self.current_round}")
 
         file_path = Path('data/tournaments') / f'{self.name}.json'
         self.save(file_path)

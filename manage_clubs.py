@@ -87,8 +87,6 @@ class App:
                         'players': all_players,
                         'context': self.context
                     }
-
-
             try:
                 screen = screen_class(**screen_args)
                 command = screen.run()
@@ -120,4 +118,3 @@ class App:
 if __name__ == "__main__":
     app = App()
     app.run()
-

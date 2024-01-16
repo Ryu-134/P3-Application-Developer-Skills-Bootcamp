@@ -7,6 +7,7 @@ from commands.base import BaseCommand
 from pathlib import Path
 import itertools
 
+
 class CreateTournamentCmd(BaseCommand):
     def __init__(self, name, venue, start_date, end_date, num_rounds, player_ids):
         self.name = name

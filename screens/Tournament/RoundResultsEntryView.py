@@ -1,4 +1,4 @@
-from commands import GoBackCmd
+from commands.GoBackCmd import GoBackCmd
 from commands.EnterResultsCmd import EnterResultsCmd
 from screens.base_screen import BaseScreen
 
@@ -15,13 +15,10 @@ class RoundResultsEntryView(BaseScreen):
         current_round_index = self.tournament.current_round - 1
         current_round_matches = self.tournament.rounds[current_round_index].matches
 
-        # Debug: Display current round index and the number of matches in this round
-        print(f"Debug: Current round index - {current_round_index}")
-        print(f"Debug: Number of matches in current round - {len(current_round_matches)}")
+        print(f"Number of matches in current round - {len(current_round_matches)}")
 
-        # Debug: Display the status of each match in the current round
         for idx, match in enumerate(current_round_matches, start=1):
-            print(f"Debug: Match {idx}: {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
+            print(f"Match {idx}: {match.player1_id} vs {match.player2_id}, Completed: {match.completed}")
 
         for idx, match in enumerate(current_round_matches, start=1):
             if not match.completed:
@@ -41,9 +38,8 @@ class RoundResultsEntryView(BaseScreen):
                         winner_id = self.determine_winner(match_index, result_str)
                         is_tie = result_str.lower() == 't'
 
-                        # Debugging: Check the match state before applying results
                         match = self.tournament.rounds[self.tournament.current_round - 1].matches[match_index]
-                        print(f"Debug: Before updating - Match {match_index + 1}, Completed: {match.completed}")
+                        print(f"Before updating - Match {match_index + 1}, Completed: {match.completed}")
 
                         return EnterResultsCmd(self.tournament, match_index, winner_id=winner_id, is_tie=is_tie,
                                                club_manager=self.club_manager)
