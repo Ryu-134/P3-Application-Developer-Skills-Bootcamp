@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Player:
     """The player class holds all information related to a player"""
 

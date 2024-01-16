@@ -16,7 +16,7 @@ class AdvanceRoundView:
 
         print(f"Checking if current round is final - Current Round: {self.tournament.current_round}"
               f", Total Rounds: {self.tournament.total_rounds}")
-        print(f"Checking if all matches in the last round are completed.")
+        print("Checking if all matches in the last round are completed.")
 
         # Check if the current round is the final round and all matches are completed
         if self.tournament.current_round == self.tournament.total_rounds and all(

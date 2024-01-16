@@ -7,7 +7,7 @@ from screens.Tournament.TournamentListView import TournamentListView
 from screens.Tournament.TournamentView import TournamentView
 from screens.Tournament.PlayerRegistrationView import PlayerRegistrationView
 from screens.Tournament.TournamentCreateView import TournamentCreateView
-from commands.context import Context  
+from commands.context import Context
 import json
 from pathlib import Path
 
@@ -101,7 +101,7 @@ class App:
                         if self.context.screen == "tournament-view" and hasattr(self.context, 'tournament'):
                             # Reconstruct the tournament view with the updated context
                             screen_args = {'tournament': self.context.tournament, 'club_manager': self.club_manager}
-                            screen = TournamentView(**screen_args)
+                            TournamentView(**screen_args)
                             continue  # Continue the loop to refresh the screen
                     else:
                         print(f"Command execution did not return a Context object: {type(new_context).__name__}")

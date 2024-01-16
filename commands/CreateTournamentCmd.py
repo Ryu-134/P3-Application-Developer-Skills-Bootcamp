@@ -9,11 +9,11 @@ import itertools
 
 
 class CreateTournamentCmd(BaseCommand):
-    def __init__(self, name, venue, start_date, end_date, num_rounds, player_ids):
+    def __init__(self, name, venue, start_date_str, end_date_str, num_rounds, player_ids):
         self.name = name
         self.venue = venue
-        self.start_date = datetime.strptime(start_date, '%d-%m-%Y')
-        self.end_date = datetime.strptime(end_date, '%d-%m-%Y')
+        self.start_date_str = datetime.strptime(start_date_str, '%d-%m-%Y')
+        self.end_date_str = datetime.strptime(end_date_str, '%d-%m-%Y')
         self.num_rounds = num_rounds
         self.player_ids = player_ids
 
@@ -30,8 +30,8 @@ class CreateTournamentCmd(BaseCommand):
         new_tournament = Tournament(
             name=self.name,
             venue=self.venue,
-            start_date=self.start_date,
-            end_date=self.end_date,
+            start_date=self.start_date_str,
+            end_date=self.end_date_str,
             players=self.player_ids,
             rounds=round_objects,
             current_round=1,
